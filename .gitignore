@@ -1,0 +1,20 @@
+# Helm
+charts/*/charts/
+*.tgz
+requirements.lock
+
+# Secrets (commit sealed/encrypted secrets only)
+*.secret.yaml
+*-secret.yaml
+secrets.yaml
+*.dec.yaml
+.env
+.env.*
+*.pem
+*.key
+kubeconfig*
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
