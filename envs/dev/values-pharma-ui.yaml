@@ -50,6 +50,12 @@ configmap:
   API_BASE_URL: "/api"
   AUTH_BASE_URL: "/api/auth"
   ENV: dev
+# Used by nginx to build the api-gateway FQDN (api-gateway.<ns>.svc.cluster.local)
+env:
+  - name: POD_NAMESPACE
+    valueFrom:
+      fieldRef:
+        fieldPath: metadata.namespace
 # Nginx requires writable directories even with readOnlyRootFilesystem: true
 volumeMounts:
   - name: tmp
@@ -58,12 +64,17 @@ volumeMounts:
     mountPath: /var/cache/nginx
   - name: nginx-run
     mountPath: /var/run
+  # envsubst renders the nginx template into conf.d at startup
+  - name: nginx-conf
+    mountPath: /etc/nginx/conf.d
 volumes:
   - name: tmp
     emptyDir: {}
   - name: nginx-cache
     emptyDir: {}
   - name: nginx-run
+    emptyDir: {}
+  - name: nginx-conf
     emptyDir: {}
 serviceAccount:
   create: true
