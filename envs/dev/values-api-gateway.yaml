@@ -15,6 +15,8 @@ ingress:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/group.name: pharma-dev
+    # Gateway returns 404 on "/", so the ALB default health check marks it unhealthy
+    alb.ingress.kubernetes.io/healthcheck-path: /actuator/health/readiness
   host: ""
   path: /api
   pathType: Prefix
