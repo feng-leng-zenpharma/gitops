@@ -1,0 +1,63 @@
+replicaCount: 1
+fullnameOverride: notification-service
+image:
+  repository: 778127141920.dkr.ecr.ca-central-1.amazonaws.com/notification-service
+  # Placeholder — CI overwrites this with sha-<7chars> on the first develop build
+  tag: latest
+  pullPolicy: Always
+service:
+  type: ClusterIP
+  port: 3000
+  targetPort: 3000
+# Internal only — exposed through api-gateway
+ingress:
+  enabled: false
+resources:
+  requests:
+    cpu: 50m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 70
+livenessProbe:
+  path: /actuator/health/liveness
+  port: 3000
+  initialDelaySeconds: 15
+  periodSeconds: 15
+  timeoutSeconds: 5
+  failureThreshold: 3
+  successThreshold: 1
+readinessProbe:
+  path: /actuator/health/readiness
+  port: 3000
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+  successThreshold: 1
+configmap:
+  NODE_ENV: production
+  PORT: "3000"
+  LOG_LEVEL: debug
+  # No SMTP server in dev yet; point SMTP_HOST at a relay (or add an smtp secret) to send real mail
+  SMTP_HOST: localhost
+  SMTP_PORT: "1025"
+  SMTP_SECURE: "false"
+  SMTP_FROM: noreply@pharma.com
+  QC_ALERT_EMAIL: qc@pharma.com
+  ORDER_ALERT_EMAIL: procurement@pharma.com
+volumeMounts:
+  - name: tmp
+    mountPath: /tmp
+volumes:
+  - name: tmp
+    emptyDir: {}
+serviceAccount:
+  create: true
+  annotations: {}
+  name: notification-service
