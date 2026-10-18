@@ -3,7 +3,7 @@ fullnameOverride: notification-service
 image:
   repository: 778127141920.dkr.ecr.ca-central-1.amazonaws.com/notification-service
   # Placeholder — CI overwrites this with sha-<7chars> on the first develop build
-  tag: latest
+  tag: sha-7b6adcb
   pullPolicy: Always
 service:
   type: ClusterIP
